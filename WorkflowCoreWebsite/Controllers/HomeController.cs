@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using WorkflowCore.Interface;
 using WorkflowCoreWebsite.Models;
+using WorkflowCoreWebsite.Workflows;
 
 namespace WorkflowCoreWebsite.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IWorkflowHost workflowHost;
+
+        public HomeController(IWorkflowHost workflowHost)
+        {
+            this.workflowHost = workflowHost;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -17,14 +23,35 @@ namespace WorkflowCoreWebsite.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
             return View();
         }
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Contact(ContactForm model)
+        {
+            if (ModelState.IsValid)
+            {
+                workflowHost.StartWorkflow(nameof(ContactFormWorkflow), model);
+
+                TempData["Message"] = "Thanks for reaching out!";
+                return RedirectToAction(nameof(Contact));
+            }
+
+            return View(model);
+        }
+
+        public IActionResult Ack(Guid id)
+        {
+            // You could of course do a lot more here like ask for more information
+            // and publish that data as part of the event.
+
+            workflowHost.PublishEvent("ContactFormAcknowledged", id.ToString(), null);
 
             return View();
         }
