@@ -20,7 +20,7 @@ Explanation:
 1. When the form on the Home/Contact page is submitted a "ContactFormWorkflow" is started with the data from the form.
 2. The ContactFormWorkflow.cs waits for a "ContactFormAcknowledged" event, and starts a recurring step in parallel that resends an email with the information in the form every 30 seconds until the email is acknowledged by going to the URL provided by the "Acknowledge receipt" link.
 3. Clicking the "Acknowledge receipt" runs the Home/Ack/{id} controller action, which fires the "ContactFormAcknowledged" with the key (`id` in the context of the action) that is provided.
-4. The "ContactFormAcknowledged" event triggers wait for event step in the ContactFormWorkflow that then changes ContactForm.Acknowledged from `true` to `false` using the `Output` step. That finishes the wait for step.
+4. The "ContactFormAcknowledged" event triggers wait for event step in the ContactFormWorkflow that then changes ContactForm.Acknowledged from `false` to `true` using the `Output` step. That finishes the wait for step.
 5. The next time the recurring step checks its `until` condition (remember, it runs every 30 seconds) it will see that ContactForm.Acknowledged is now `true`, skip performing its action, and finish the step.
 6. The completion of both steps within the parallel step will result in the parallel step finishing.
 7. The parallel step is the last step, once it completes, the workflow completes.
