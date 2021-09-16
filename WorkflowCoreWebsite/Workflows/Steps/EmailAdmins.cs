@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Mail;
 using System.Web;
 using WorkflowCore.Interface;
@@ -20,6 +21,9 @@ namespace WorkflowCoreWebsite.Workflows.Steps
                 PickupDirectoryLocation = @"C:\Development\SmtpPickupDirectory",
                 AckUrlFormat = "https://localhost:44389/Home/Ack/{0}",
             };
+
+            // Ensure the email pickup folder exists just for testing purposes
+            Directory.CreateDirectory(options.PickupDirectoryLocation);
         }
 
         public string From { get; set; }

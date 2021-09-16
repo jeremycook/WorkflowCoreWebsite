@@ -39,7 +39,7 @@ namespace WorkflowCoreWebsite.Controllers
             {
                 workflowHost.StartWorkflow(nameof(ContactFormWorkflow), model);
 
-                TempData["Message"] = "Thanks for reaching out!";
+                TempData["Message"] = @"Thanks for reaching out! The ContactFormWorkflow workflow will drop an email in C:\Development\SmtpPickupDirectory every 30 seconds until you click the link in one of them or stop/restart the web application.";
                 return RedirectToAction(nameof(Contact));
             }
 
